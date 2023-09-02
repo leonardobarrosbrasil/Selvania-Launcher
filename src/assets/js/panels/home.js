@@ -88,6 +88,14 @@ class Home {
 
     async initLaunch() {
         document.querySelector('.play-btn').addEventListener('click', async () => {
+            let informationDiv = document.createElement('div');
+            let p = document.createElement('p');
+            p.innerHTML = `Caso seu download trave, reinicie o launcher!`;
+              informationDiv.classList.add('messageDownload');
+            let newsList = document.querySelector('.news-list');
+            newsList.innerHTML = ''
+            informationDiv.appendChild(p);
+            newsList.appendChild(informationDiv);
             let urlpkg = pkg.user ? `${pkg.url}/${pkg.user}` : pkg.url;
             let uuid = (await this.database.get('1234', 'accounts-selected')).value;
             let account = (await this.database.get(uuid.selected, 'accounts')).value;
@@ -96,7 +104,7 @@ class Home {
             let launcherSettings = (await this.database.get('1234', 'launcher')).value;
 
             let playBtn = document.querySelector('.play-btn');
-            let info = document.querySelector(".text-download")
+            let info = document.querySelector(".text-download");
             let progressBar = document.querySelector(".progress-bar")
 
             if (Resolution.screen.width == '<auto>') {
@@ -144,7 +152,7 @@ class Home {
 
             launch.on('progress', (progress, size) => {
                 progressBar.style.display = "block"
-                document.querySelector(".text-download").innerHTML = `Téléchargement ${((progress / size) * 100).toFixed(0)}%`
+                document.querySelector(".text-download").innerHTML = `Baixando ${((progress / size) * 100).toFixed(0)}%`
                 ipcRenderer.send('main-window-progress', { progress, size })
                 progressBar.value = progress;
                 progressBar.max = size;
@@ -152,7 +160,7 @@ class Home {
 
             launch.on('check', (progress, size) => {
                 progressBar.style.display = "block"
-                document.querySelector(".text-download").innerHTML = `Vérification ${((progress / size) * 100).toFixed(0)}%`
+                document.querySelector(".text-download").innerHTML = `Verificando ${((progress / size) * 100).toFixed(0)}%`
                 progressBar.value = progress;
                 progressBar.max = size;
             });
@@ -207,12 +215,12 @@ class Home {
 
         if (!serverPing.error) {
             nameServer.textContent = this.config.status.nameServer;
-            serverMs.innerHTML = `<span class="green">En ligne</span> - ${serverPing.ms}ms`;
+            serverMs.innerHTML = `<span class="green">Online</span>`;
             online.classList.toggle("off");
             playersConnected.textContent = serverPing.playersConnect;
         } else if (serverPing.error) {
-            nameServer.textContent = 'Serveur indisponible';
-            serverMs.innerHTML = `<span class="red">Hors ligne</span>`;
+            nameServer.textContent = 'Em manuntenção';
+            serverMs.innerHTML = `<span class="red">Offline</span>`;
         }
     }
 

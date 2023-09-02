@@ -102,11 +102,17 @@ class Launcher {
                         name: refresh.name,
                         refresh_token: refresh.refresh_token,
                         user_properties: refresh.user_properties,
-                        meta: refresh.meta
+                        meta: {
+                            type: refresh.meta.type,
+                            xuid: refresh.meta.xuid,
+                            demo: refresh.meta.demo
+                        }
                     }
 
                     refresh_profile = {
-                        uuid: refresh.uuid
+                        uuid: refresh.uuid,
+                        skins: refresh.profile.skins || [],
+                        capes: refresh.profile.capes || [],
                     }
 
                     this.database.update(refresh_accounts, 'accounts');

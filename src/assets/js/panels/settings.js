@@ -23,39 +23,43 @@ class Settings {
     }
 
     initAccount() {
-        document.querySelector('.accounts').addEventListener('click', async(e) => {
+        const acc = document.querySelector('.accounts');
+        acc.addEventListener('click', async(e) => {
             let uuid = e.target.id;
+            const accountClicked = e.composedPath()
             let selectedaccount = await this.database.get('1234', 'accounts-selected');
-
-            if (e.path[0].classList.contains('account')) {
+            if (accountClicked[0].classList.contains('account')) {
                 accountSelect(uuid);
                 this.database.update({ uuid: "1234", selected: uuid }, 'accounts-selected');
             }
 
             if (e.target.classList.contains("account-delete")) {
-                this.database.delete(e.path[1].id, 'accounts');
+                this.database.delete(accountClicked[1].id, 'accounts');
 
-                document.querySelector('.accounts').removeChild(e.path[1])
+                document.querySelector('.accounts').removeChild(accountClicked[1])
                 if (!document.querySelector('.accounts').children.length) {
                     changePanel("login");
                     return
                 }
-
-                if (e.path[1].id === selectedaccount.value.selected) {
+                if (accountClicked[1].id === selectedaccount.value.selected) {
                     let uuid = (await this.database.getAll('accounts'))[0].value.uuid
                     this.database.update({
                         uuid: "1234",
                         selected: uuid
-                    }, 'accounts-selected')
-                    accountSelect(uuid)
+                    }, 'accounts-selected');
+                    accountSelect(uuid);
+                }
+                if(document.getElementsByClassName('account').length !== 3) {
+                  const buttonAdd = document.getElementsByClassName('add-account')[0]
+                  buttonAdd.disabled = false;
+                  buttonAdd.classList.remove('button-add-disabled');
                 }
             }
-        })
-
+        });
         document.querySelector('.add-account').addEventListener('click', () => {
             document.querySelector(".cancel-login").style.display = "contents";
             changePanel("login");
-        })
+        });
     }
 
     async initRam() {
@@ -63,8 +67,8 @@ class Settings {
         let totalMem = Math.trunc(os.totalmem() / 1073741824 * 10) / 10;
         let freeMem = Math.trunc(os.freemem() / 1073741824 * 10) / 10;
 
-        document.getElementById("total-ram").textContent = `${totalMem} Go`;
-        document.getElementById("free-ram").textContent = `${freeMem} Go`;
+        document.getElementById("total-ram").textContent = `${totalMem} Gb`;
+        document.getElementById("free-ram").textContent = `${freeMem} Gb`;
 
         let sliderDiv = document.querySelector(".memory-slider");
         sliderDiv.setAttribute("max", Math.trunc((80 * totalMem) / 100));
@@ -75,12 +79,12 @@ class Settings {
         let minSpan = document.querySelector(".slider-touch-left span");
         let maxSpan = document.querySelector(".slider-touch-right span");
 
-        minSpan.setAttribute("value", `${ram.ramMin} Go`);
-        maxSpan.setAttribute("value", `${ram.ramMax} Go`);
+        minSpan.setAttribute("value", `${ram.ramMin} Gb`);
+        maxSpan.setAttribute("value", `${ram.ramMax} Gb`);
 
         slider.on("change", (min, max) => {
-            minSpan.setAttribute("value", `${min} Go`);
-            maxSpan.setAttribute("value", `${max} Go`);
+            minSpan.setAttribute("value", `${min} Gb`);
+            maxSpan.setAttribute("value", `${max} Gb`);
             this.database.update({ uuid: "1234", ramMin: `${min}`, ramMax: `${max}` }, 'ram')
         });
     }
@@ -172,13 +176,13 @@ class Settings {
         }
 
         let closeLauncher = document.getElementById("launcher-close");
-        let closeAll = document.getElementById("launcher-close-all");
+        // let closeAll = document.getElementById("launcher-close-all");
         let openLauncher = document.getElementById("launcher-open");
 
         if(settingsLauncher.launcher.close === 'close-launcher') {
             closeLauncher.checked = true;
-        } else if(settingsLauncher.launcher.close === 'close-all') {
-            closeAll.checked = true;
+        // } else if(settingsLauncher.launcher.close === 'close-all') {
+        //     closeAll.checked = true;
         } else if(settingsLauncher.launcher.close === 'open-launcher') {
             openLauncher.checked = true;
         }
@@ -186,27 +190,27 @@ class Settings {
         closeLauncher.addEventListener("change", () => {
             if(closeLauncher.checked) {
                 openLauncher.checked = false;
-                closeAll.checked = false;
+                // closeAll.checked = false;
             }
            if(!closeLauncher.checked) closeLauncher.checked = true;
             settingsLauncher.launcher.close = 'close-launcher';
             this.database.update(settingsLauncher, 'launcher');
         })
 
-        closeAll.addEventListener("change", () => {
-            if(closeAll.checked) {
-                closeLauncher.checked = false;
-                openLauncher.checked = false;
-            }
-            if(!closeAll.checked) closeAll.checked = true;
-            settingsLauncher.launcher.close = 'close-all';
-            this.database.update(settingsLauncher, 'launcher');
-        })
+        // closeAll.addEventListener("change", () => {
+        //     if(closeAll.checked) {
+        //         closeLauncher.checked = false;
+        //         openLauncher.checked = false;
+        //     }
+        //     if(!closeAll.checked) closeAll.checked = true;
+        //     settingsLauncher.launcher.close = 'close-all';
+        //     this.database.update(settingsLauncher, 'launcher');
+        // })
 
         openLauncher.addEventListener("change", () => {
             if(openLauncher.checked) {
                 closeLauncher.checked = false;
-                closeAll.checked = false;
+                // closeAll.checked = false;
             }
             if(!openLauncher.checked) openLauncher.checked = true;
             settingsLauncher.launcher.close = 'open-launcher';

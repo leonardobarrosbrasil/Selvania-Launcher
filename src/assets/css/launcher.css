@@ -21,10 +21,10 @@ img {
 
 .dragbar {
     position: fixed;
-    background: #00000080;
+    background: transparent;
     top: 0px;
     left: 0px;
-    width: 100%;
+    width: 50%;
     height: 26px;
     -webkit-app-region: drag;
     z-index: 11;
@@ -54,6 +54,10 @@ img {
     transition: color .2s, background-color .2s;
     color: black;
     cursor: pointer;
+}
+
+.button-add-disabled {
+  opacity: 50%;
 }
 
 .icon-close:hover {

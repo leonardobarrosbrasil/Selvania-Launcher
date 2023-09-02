@@ -65,7 +65,11 @@ class Login {
                     name: account_connect.name,
                     refresh_token: account_connect.refresh_token,
                     user_properties: account_connect.user_properties,
-                    meta: account_connect.meta
+                    meta: {
+                        type: account_connect.meta.type,
+                        xuid: account_connect.meta.xuid,
+                        demo: account_connect.meta.demo
+                    }
                 }
 
                 let profile = {
@@ -123,7 +127,7 @@ class Login {
 
 
             if (mailInput.value == "") {
-                infoLogin.innerHTML = "Entrez votre adresse email / Nom d'utilisateur"
+                infoLogin.innerHTML = "Insira um nick";
                 cancelMojangBtn.disabled = false;
                 loginBtn.disabled = false;
                 mailInput.disabled = false;
@@ -190,7 +194,7 @@ class Login {
         let loginBtn = document.querySelector(".login-btn")
         let mojangBtn = document.querySelector('.mojang')
 
-        mojangBtn.innerHTML = "Offline"
+        mojangBtn.innerHTML = "Pirata"
 
         mojangBtn.addEventListener("click", () => {
             document.querySelector(".login-card").style.display = "none";
